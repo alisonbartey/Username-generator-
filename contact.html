@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #555;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 8px 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      resize: vertical;
+      font-size: 1rem;
+    }
+    button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Contact Us</h1>
+  <form action="mailto:coolusernamegenerator@owleyes.ch" method="POST" enctype="text/plain">
+    <label for="name">Name</label>
+    <input type="text" id="name" name="name" required placeholder="Your full name" />
+
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" required placeholder="your.email@example.com" />
+
+    <label for="message">Message</label>
+    <textarea id="message" name="message" rows="6" required placeholder="Write your message here"></textarea>
+
+    <button type="submit">Send Message</button>
+  </form>
+</body>
+</html>
