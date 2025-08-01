@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cool Username Generator - Dashboard</title>
+
+  <!-- Firebase SDKs -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAbQTpBTqNFJ2GiPsmiE-ou72DVeAlYwPg",
+      authDomain: "username-generator-94969.firebaseapp.com",
+      projectId: "username-generator-94969",
+      storageBucket: "username-generator-94969.firebasestorage.app",
+      messagingSenderId: "87805065452",
+      appId: "1:87805065452:web:d5055af5dbe595b4418dc9",
+      measurementId: "G-9706HJPB2G"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Protect page: redirect to login if not authenticated
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = "auth.html"; // Redirect to login page
+      } else {
+        document.getElementById("user-email").textContent = user.email;
+      }
+    });
+
+    // Logout handler
+    window.logout = () => {
+      signOut(auth).then(() => {
+        window.location.href = "auth.html";
+      });
+    };
+  </script>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #141e30, #243b55);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 { margin-bottom: 10px; }
+
+    #username {
+      font-size: 26px;
+      margin: 20px 0;
+      padding: 12px 24px;
+      background: #1f1f1f;
+      border-radius: 10px;
+      cursor: pointer;
+      user-select: all;
+      border: 2px dashed #00c6ff;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: #00c6ff;
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #007ab3;
+      color: #fff;
+    }
+
+    #logout-btn {
+      background-color: #ff4444;
+      margin-top: 20px;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 13px;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>Welcome, <span id="user-email">Loading...</span></h1>
+
+  <h2>Cool Username Generator</h2>
+  <button onclick="generateUsername()">Generate Username</button>
+  <div id="username" onclick="copyUsername()">Click to copy username</div>
+
+  <button id="logout-btn" onclick="logout()">Log Out</button>
+
+  <footer>
+    Built with ❤️ | Millions of combinations |
+    <a href="privacy.html" style="color: #ccc;">Privacy Policy</a> |
+    <a href="contact.html" style="color: #ccc;">Contact Us</a> |
+    <a href="terms.html" style="color: #ccc;">Terms of Use</a>
+  </footer>
+
+  <script src="words.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
