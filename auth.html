@@ -2,83 +2,147 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login / Signup</title>
   <style>
+    /* Background Gradient */
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      max-width: 400px;
-      margin: 50px auto;
-      padding: 20px;
-      background: #f5f7ff;
-      color: #222;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
     }
+
+    /* Auth Card */
+    .auth-card {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(15px);
+      border-radius: 16px;
+      padding: 40px 30px;
+      width: 350px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+      color: #fff;
+      animation: fadeIn 0.6s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     h2 {
-      margin-bottom: 12px;
-      border-bottom: 2px solid #000dff;
-      padding-bottom: 6px;
+      text-align: center;
+      margin-bottom: 24px;
     }
-    input {
-      margin: 8px 0;
-      padding: 10px;
-      width: 100%;
-      border: 1.8px solid #ccc;
-      border-radius: 6px;
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .tabs button {
+      background: transparent;
+      border: none;
+      color: #ddd;
+      padding: 10px 20px;
+      font-weight: 600;
       font-size: 1rem;
-      transition: border-color 0.3s;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
     }
-    input:focus {
-      outline: none;
-      border-color: #000dff;
+
+    .tabs button.active {
+      color: #fff;
+      border-color: #fff;
     }
-    button {
-      padding: 12px;
+
+    input {
       width: 100%;
-      margin-top: 15px;
-      background-color: #000dff;
-      color: white;
-      font-weight: 700;
-      font-size: 1.1rem;
+      padding: 12px;
+      margin: 10px 0;
       border: none;
       border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    button.submit-btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #fff;
+      color: #764ba2;
+      font-weight: bold;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      margin-top: 15px;
       cursor: pointer;
-      transition: background-color 0.3s;
+      transition: 0.3s;
     }
-    button:hover {
-      background-color: #0000cc;
+
+    button.submit-btn:hover {
+      background-color: #f1f1f1;
     }
+
+    .form {
+      display: none;
+    }
+
+    .form.active {
+      display: block;
+    }
+
     #status {
       margin-top: 20px;
-      font-weight: 600;
+      text-align: center;
+      font-weight: bold;
+      color: #ffd700;
       min-height: 24px;
-      color: #333;
     }
   </style>
 </head>
 <body>
-  <h2>Sign Up</h2>
-  <input type="email" id="signup-email" placeholder="Email" required />
-  <input type="password" id="signup-password" placeholder="Password" required />
-  <button id="signup-btn">Create Account</button>
+  <div class="auth-card">
+    <h2>🚀 Premium Access</h2>
 
-  <h2>Login</h2>
-  <input type="email" id="login-email" placeholder="Email" required />
-  <input type="password" id="login-password" placeholder="Password" required />
-  <button id="login-btn">Login</button>
+    <div class="tabs">
+      <button id="login-tab" class="active">Login</button>
+      <button id="signup-tab">Sign Up</button>
+    </div>
 
-  <div id="status"></div>
+    <!-- Login Form -->
+    <div class="form active" id="login-form">
+      <input type="email" id="login-email" placeholder="Email" />
+      <input type="password" id="login-password" placeholder="Password" />
+      <button class="submit-btn" id="login-btn">Log In</button>
+    </div>
 
-  <!-- Firebase SDK - Modular (v12) -->
+    <!-- Signup Form -->
+    <div class="form" id="signup-form">
+      <input type="email" id="signup-email" placeholder="Email" />
+      <input type="password" id="signup-password" placeholder="Password" />
+      <button class="submit-btn" id="signup-btn">Sign Up</button>
+    </div>
+
+    <div id="status"></div>
+  </div>
+
+  <!-- Firebase v12 Modular SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
     import {
       getAuth,
       createUserWithEmailAndPassword,
       signInWithEmailAndPassword,
-      onAuthStateChanged,
+      onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
-    // Your Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyAbQTpBTqNFJ2GiPsmiE-ou72DVeAlYwPg",
       authDomain: "username-generator-94969.firebaseapp.com",
@@ -89,69 +153,66 @@
       measurementId: "G-9706HJPB2G"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
+    const loginTab = document.getElementById('login-tab');
+    const signupTab = document.getElementById('signup-tab');
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
     const statusDiv = document.getElementById('status');
 
-    // Signup handler
-    document.getElementById('signup-btn').addEventListener('click', () => {
-      const email = document.getElementById('signup-email').value.trim();
-      const password = document.getElementById('signup-password').value.trim();
+    // Tab toggles
+    loginTab.onclick = () => {
+      loginTab.classList.add('active');
+      signupTab.classList.remove('active');
+      loginForm.classList.add('active');
+      signupForm.classList.remove('active');
+      statusDiv.textContent = '';
+    };
 
-      if (!email || !password) {
-        statusDiv.textContent = "Please enter email and password.";
-        statusDiv.style.color = "red";
-        return;
-      }
+    signupTab.onclick = () => {
+      signupTab.classList.add('active');
+      loginTab.classList.remove('active');
+      signupForm.classList.add('active');
+      loginForm.classList.remove('active');
+      statusDiv.textContent = '';
+    };
+
+    // Signup
+    document.getElementById('signup-btn').addEventListener('click', () => {
+      const email = document.getElementById('signup-email').value;
+      const password = document.getElementById('signup-password').value;
 
       createUserWithEmailAndPassword(auth, email, password)
         .then(() => {
-          statusDiv.textContent = "Signup successful! Redirecting...";
-          statusDiv.style.color = "green";
-          setTimeout(() => {
-            window.location.href = '/premium.html';
-          }, 1000);
+          statusDiv.textContent = "🎉 Sign up successful! Redirecting...";
+          setTimeout(() => window.location.href = "/premium.html", 1000);
         })
         .catch(error => {
-          statusDiv.textContent = error.message;
-          statusDiv.style.color = "red";
+          statusDiv.textContent = "⚠️ " + error.message;
         });
     });
 
-    // Login handler
+    // Login
     document.getElementById('login-btn').addEventListener('click', () => {
-      const email = document.getElementById('login-email').value.trim();
-      const password = document.getElementById('login-password').value.trim();
-
-      if (!email || !password) {
-        statusDiv.textContent = "Please enter email and password.";
-        statusDiv.style.color = "red";
-        return;
-      }
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
 
       signInWithEmailAndPassword(auth, email, password)
         .then(() => {
-          statusDiv.textContent = "Login successful! Redirecting...";
-          statusDiv.style.color = "green";
-          setTimeout(() => {
-            window.location.href = '/premium.html';
-          }, 1000);
+          statusDiv.textContent = "✅ Login successful! Redirecting...";
+          setTimeout(() => window.location.href = "/premium.html", 1000);
         })
         .catch(error => {
-          statusDiv.textContent = error.message;
-          statusDiv.style.color = "red";
+          statusDiv.textContent = "⚠️ " + error.message;
         });
     });
 
-    // Display user status if already logged in
+    // Show status if already logged in
     onAuthStateChanged(auth, user => {
       if (user) {
-        statusDiv.textContent = `Logged in as ${user.email}`;
-        statusDiv.style.color = "green";
-      } else {
-        statusDiv.textContent = "";
+        statusDiv.textContent = `🔒 Logged in as ${user.email}`;
       }
     });
   </script>
