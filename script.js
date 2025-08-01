@@ -14,3 +14,19 @@ function copyUsername() {
 }
 
 document.addEventListener('DOMContentLoaded', generateUsername);
+function generateUsername() {
+  // Ensure user is signed in (email check)
+  const userEmail = document.getElementById("user-email").textContent;
+  if (!userEmail || userEmail === "Loading...") {
+    alert("Please sign in to generate usernames.");
+    return;
+  }
+
+  // Generate username using premium words
+  const adjective = premiumAdjectives[Math.floor(Math.random() * premiumAdjectives.length)];
+  const noun = premiumNouns[Math.floor(Math.random() * premiumNouns.length)];
+  const number = Math.floor(Math.random() * 1000);
+
+  const username = `${adjective}${noun}${number}`;
+  document.getElementById("username").textContent = username;
+}
