@@ -30,3 +30,31 @@ function generateUsername() {
   const username = `${adjective}${noun}${number}`;
   document.getElementById("username").textContent = username;
 }
+async function generateUsername() {
+  const userEmail = document.getElementById("user-email").textContent;
+  if (!userEmail || userEmail === "Loading...") {
+    alert("Please sign in to generate usernames.");
+    return;
+  }
+
+  const adjective = premiumAdjectives[Math.floor(Math.random() * premiumAdjectives.length)];
+  const noun = premiumNouns[Math.floor(Math.random() * premiumNouns.length)];
+  const number = Math.floor(Math.random() * 1000);
+  const username = `${adjective}${noun}${number}`;
+
+  document.getElementById("username").textContent = username;
+
+  // Save to Firestore
+  try {
+    const user = auth.currentUser;
+    await addDoc(collection(db, "usernames"), {
+      uid: user.uid,
+      email: user.email,
+      username: username,
+      timestamp: new Date()
+    });
+    console.log("Username saved to Firebase:", username);
+  } catch (error) {
+    console.error("Error saving username:", error);
+  }
+}
