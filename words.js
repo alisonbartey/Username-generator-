@@ -24,3 +24,10 @@ const nouns = [
 ];
 
 const suffixes = ["", "007", "_X", "_YT", "123", "Pro", "Dev", "TV", "99", "_God"];
+const premiumAdjectives = [
+  "Epic", "Silent", "Mystic", "Glorious", "Brave", "Fierce", "Radiant", "Quantum", "Velvet", "Crimson"
+];
+
+const premiumNouns = [
+  "Wolf", "Dragon", "Knight", "Phoenix", "Shadow", "Orbit", "Vortex", "Titan", "Ninja", "Falcon"
+];
