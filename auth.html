@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login / Signup</title>
+  <style>
+    body { font-family: sans-serif; max-width: 400px; margin: 30px auto; }
+    input { margin: 5px 0; padding: 8px; width: 100%; }
+    button { padding: 10px; width: 100%; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h2>Sign Up</h2>
+  <input type="email" id="signup-email" placeholder="Email" />
+  <input type="password" id="signup-password" placeholder="Password" />
+  <button onclick="signup()">Create Account</button>
+
+  <h2>Login</h2>
+  <input type="email" id="login-email" placeholder="Email" />
+  <input type="password" id="login-password" placeholder="Password" />
+  <button onclick="login()">Login</button>
+
+  <h2>Status</h2>
+  <div id="status"></div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js"></script>
+
+  <script>
+    // Replace with your Firebase project config
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Sign up
+    function signup() {
+      const email = document.getElementById('signup-email').value;
+      const password = document.getElementById('signup-password').value;
+      auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          document.getElementById('status').innerText = "Signup successful!";
+        })
+        .catch((error) => {
+          document.getElementById('status').innerText = error.message;
+        });
+    }
+
+    // Log in
+    function login() {
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          document.getElementById('status').innerText = "Login successful!";
+        })
+        .catch((error) => {
+          document.getElementById('status').innerText = error.message;
+        });
+    }
+
+    // Show logged-in user
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        document.getElementById('status').innerText = `Logged in as ${user.email}`;
+      }
+    });
+  </script>
+</body>
+</html>
