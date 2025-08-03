@@ -34,31 +34,31 @@
       }
     });
 
-    async function generateUsername() {
-      const adjectives = ["Epic", "Silent", "Mystic", "Glorious", "Brave", "Fierce", "Radiant", "Quantum", "Velvet", "Crimson"];
-      const nouns = ["Wolf", "Dragon", "Knight", "Phoenix", "Shadow", "Orbit", "Vortex", "Titan", "Ninja", "Falcon"];
-      const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
-      const noun = nouns[Math.floor(Math.random() * nouns.length)];
-      const number = Math.floor(Math.random() * 1000);
-      const username = `${adjective}${noun}${number}`;
+window.generateUsername = async function () {
+  const adjectives = ["Epic", "Silent", "Mystic", "Glorious", "Brave", "Fierce", "Radiant", "Quantum", "Velvet", "Crimson"];
+  const nouns = ["Wolf", "Dragon", "Knight", "Phoenix", "Shadow", "Orbit", "Vortex", "Titan", "Ninja", "Falcon"];
+  const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+  const noun = nouns[Math.floor(Math.random() * nouns.length)];
+  const number = Math.floor(Math.random() * 1000);
+  const username = `${adjective}${noun}${number}`;
 
-      document.getElementById("username").textContent = username;
+  document.getElementById("username").textContent = username;
 
-      const user = auth.currentUser;
-      if (user) {
-        try {
-          await addDoc(collection(db, "usernames"), {
-            uid: user.uid,
-            email: user.email,
-            username: username,
-            timestamp: new Date()
-          });
-        } catch (error) {
-          console.error("Failed to save username:", error);
-        }
-        loadUsernames(user.uid); // Refresh list
-      }
+  const user = auth.currentUser;
+  if (user) {
+    try {
+      await addDoc(collection(db, "usernames"), {
+        uid: user.uid,
+        email: user.email,
+        username: username,
+        timestamp: new Date()
+      });
+    } catch (error) {
+      console.error("Failed to save username:", error);
     }
+    loadUsernames(user.uid); // Refresh list
+  }
+};
 
     async function loadUsernames(uid) {
       const q = query(collection(db, "usernames"), where("uid", "==", uid));
