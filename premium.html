@@ -78,12 +78,12 @@ window.generateUsername = async function () {
       });
     }
 
-    function copyUsername() {
-      const text = document.getElementById("username").textContent;
-      navigator.clipboard.writeText(text).then(() => {
-        alert("Username copied to clipboard!");
-      });
-    }
+window.copyUsername = function () {
+  const text = document.getElementById("username").textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    alert("Username copied to clipboard!");
+  });
+};
 
     window.logout = () => {
       signOut(auth).then(() => {
