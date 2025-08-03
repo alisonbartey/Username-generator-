@@ -5,17 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Premium Username Generator</title>
 
-  <!-- Firebase SDK -->
+  <!-- Firebase SDKs -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAbQTpBTqNFJ2GiPsmiE-ou72DVeAlYwPg",
       authDomain: "username-generator-94969.firebaseapp.com",
       projectId: "username-generator-94969",
-      storageBucket: "username-generator-94969",
+      storageBucket: "username-generator-94969.appspot.com",
       messagingSenderId: "87805065452",
       appId: "1:87805065452:web:d5055af5dbe595b4418dc9",
       measurementId: "G-9706HJPB2G"
@@ -25,13 +25,65 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       if (!user) {
         window.location.href = "auth.html";
       } else {
         document.getElementById("user-email").textContent = user.email;
+        loadUsernames(user.uid);
       }
     });
+
+    async function generateUsername() {
+      const adjectives = ["Epic", "Silent", "Mystic", "Glorious", "Brave", "Fierce", "Radiant", "Quantum", "Velvet", "Crimson"];
+      const nouns = ["Wolf", "Dragon", "Knight", "Phoenix", "Shadow", "Orbit", "Vortex", "Titan", "Ninja", "Falcon"];
+      const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+      const noun = nouns[Math.floor(Math.random() * nouns.length)];
+      const number = Math.floor(Math.random() * 1000);
+      const username = `${adjective}${noun}${number}`;
+
+      document.getElementById("username").textContent = username;
+
+      const user = auth.currentUser;
+      if (user) {
+        try {
+          await addDoc(collection(db, "usernames"), {
+            uid: user.uid,
+            email: user.email,
+            username: username,
+            timestamp: new Date()
+          });
+        } catch (error) {
+          console.error("Failed to save username:", error);
+        }
+        loadUsernames(user.uid); // Refresh list
+      }
+    }
+
+    async function loadUsernames(uid) {
+      const q = query(collection(db, "usernames"), where("uid", "==", uid));
+      const snapshot = await getDocs(q);
+      const list = document.getElementById("username-list");
+      list.innerHTML = "";
+
+      if (snapshot.empty) {
+        list.innerHTML = "<li>No saved usernames yet.</li>";
+        return;
+      }
+
+      snapshot.forEach((doc) => {
+        const li = document.createElement("li");
+        li.textContent = doc.data().username;
+        list.appendChild(li);
+      });
+    }
+
+    function copyUsername() {
+      const text = document.getElementById("username").textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Username copied to clipboard!");
+      });
+    }
 
     window.logout = () => {
       signOut(auth).then(() => {
@@ -50,9 +102,9 @@
     }
 
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
     }
 
     body {
@@ -78,7 +130,6 @@
 
     header .user {
       font-size: 0.95rem;
-      opacity: 0.9;
     }
 
     main {
@@ -93,7 +144,6 @@
 
     main h2 {
       font-size: 2rem;
-      margin-bottom: 10px;
     }
 
     .cta-button,
@@ -133,6 +183,30 @@
       word-break: break-word;
     }
 
+    #history-section {
+      margin-top: 40px;
+      width: 100%;
+      max-width: 500px;
+      text-align: left;
+    }
+
+    #history-section h2 {
+      margin-bottom: 10px;
+    }
+
+    #username-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    #username-list li {
+      padding: 10px;
+      margin-bottom: 8px;
+      background: #1f1f1f;
+      border-left: 4px solid var(--primary);
+      border-radius: 6px;
+    }
+
     footer {
       text-align: center;
       padding: 20px;
@@ -147,15 +221,14 @@
       text-decoration: none;
     }
 
-    @media screen and (max-width: 600px) {
-      main {
-        padding: 30px 10px;
-      }
-
+    @media (max-width: 600px) {
       header {
         flex-direction: column;
         gap: 10px;
-        text-align: center;
+      }
+
+      main {
+        padding: 30px 10px;
       }
     }
   </style>
@@ -171,15 +244,21 @@
     <button class="cta-button" onclick="generateUsername()">Generate Username</button>
     <div id="username" onclick="copyUsername()">Click to copy username</div>
     <button class="logout-button" onclick="logout()">Log Out</button>
+
+    <!-- 🔽 Saved usernames section -->
+    <section id="history-section">
+      <h2>Your Saved Usernames</h2>
+      <ul id="username-list">
+        <li>Loading your saved usernames...</li>
+      </ul>
+    </section>
   </main>
 
   <footer>
-    Built with ❤️ | <a href="privacy.html">Privacy</a> | 
-    <a href="terms.html">Terms</a> | 
+    Built with ❤️ |
+    <a href="privacy.html">Privacy</a> |
+    <a href="terms.html">Terms</a> |
     <a href="contact.html">Contact</a>
   </footer>
-
-  <script src="words.js"></script>
-  <script src="script.js"></script>
 </body>
 </html>
