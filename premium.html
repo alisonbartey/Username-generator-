@@ -37,6 +37,7 @@
 window.generateUsername = async function () {
   const adjectives = ["Epic", "Silent", "Mystic", "Glorious", "Brave", "Fierce", "Radiant", "Quantum", "Velvet", "Crimson"];
   const nouns = ["Wolf", "Dragon", "Knight", "Phoenix", "Shadow", "Orbit", "Vortex", "Titan", "Ninja", "Falcon"];
+
   const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
   const noun = nouns[Math.floor(Math.random() * nouns.length)];
   const number = Math.floor(Math.random() * 1000);
@@ -45,38 +46,44 @@ window.generateUsername = async function () {
   document.getElementById("username").textContent = username;
 
   const user = auth.currentUser;
-  if (user) {
-    try {
-      await addDoc(collection(db, "usernames"), {
-        uid: user.uid,
-        email: user.email,
-        username: username,
-        timestamp: new Date()
-      });
-    } catch (error) {
-      console.error("Failed to save username:", error);
-    }
-    loadUsernames(user.uid); // Refresh list
+  if (!user) {
+    alert("You're not signed in.");
+    return;
+  }
+
+  try {
+    await addDoc(collection(db, "usernames"), {
+      uid: user.uid,
+      email: user.email,
+      username: username,
+      timestamp: new Date()
+    });
+    console.log("Username saved:", username);
+    loadUsernames(user.uid); // Refresh display
+  } catch (error) {
+    console.error("Error saving username:", error);
+    alert("Failed to save username. Please try again.");
   }
 };
 
-    async function loadUsernames(uid) {
-      const q = query(collection(db, "usernames"), where("uid", "==", uid));
-      const snapshot = await getDocs(q);
-      const list = document.getElementById("username-list");
-      list.innerHTML = "";
+async function loadUsernames(uid) {
+  const q = query(collection(db, "usernames"), where("uid", "==", uid));
+  const snapshot = await getDocs(q);
 
-      if (snapshot.empty) {
-        list.innerHTML = "<li>No saved usernames yet.</li>";
-        return;
-      }
+  const list = document.getElementById("username-list");
+  list.innerHTML = "";
 
-      snapshot.forEach((doc) => {
-        const li = document.createElement("li");
-        li.textContent = doc.data().username;
-        list.appendChild(li);
-      });
-    }
+  if (snapshot.empty) {
+    list.innerHTML = "<li>No saved usernames yet.</li>";
+    return;
+  }
+
+  snapshot.forEach((doc) => {
+    const li = document.createElement("li");
+    li.textContent = doc.data().username;
+    list.appendChild(li);
+  });
+}
 
 window.copyUsername = function () {
   const text = document.getElementById("username").textContent;
